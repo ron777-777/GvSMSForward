@@ -4,7 +4,7 @@
 http://script.google.com
 
 添加项目内 
-[code.gs]code.gs
+[code.gs][code.gs]
 
 修改你的域名至此处
 ```
