@@ -195,7 +195,7 @@
 3.  将本项目中 `google_apps_script/forwarder.gs` (即我们最终的 GAS 脚本) 的内容粘贴到代码编辑器中。
 4.  **[关键]** 修改 `SERVER_API_URL` 变量，将其值替换为您自己的域名：
     ```javascript
-    const SERVER_API_URL = "[https://your-domain.com/api/new-sms](https://your-domain.com/api/new-sms)"; 
+    const SERVER_API_URL = "https://your-domain.com/api/new-sms"; 
     ```
 5.  **[关键]** 检查 `query` 变量，确保它符合您的过滤需求（例如 `newer_than:1d is:unread`）。
 6.  点击顶部的“**运行**” (▶️) 按钮。
