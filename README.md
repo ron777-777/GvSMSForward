@@ -13,4 +13,4 @@ http://script.google.com
 const SERVER_API_URL = "https://xxx.xxx.xxx/api/new-sms";
 ```
 
-[def1]:[./code.gs]
+[def1]:[code.gs]
