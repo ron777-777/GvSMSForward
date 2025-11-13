@@ -4,7 +4,7 @@
 http://script.google.com
 
 添加项目内 
-[code.gs][def1]
+[code.gs]code.gs
 
 修改你的域名至此处
 ```
@@ -12,5 +12,3 @@ http://script.google.com
 // ----------------------------------------------
 const SERVER_API_URL = "https://xxx.xxx.xxx/api/new-sms";
 ```
-
-[def1]:[code.gs]
