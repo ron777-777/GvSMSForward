@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,63 +11,84 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f5f5f5;
         }
+
         nav {
-            background-color: #4285F4; /* Google Blue */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: #4285F4;
+            /* Google Blue */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .brand-logo {
             font-weight: 500;
             font-size: 1.5rem !important;
         }
+
         .container {
             margin-top: 20px;
             max-width: 800px;
         }
+
         .card {
             border-radius: 8px;
             border: none;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
             opacity: 0;
             animation: slideUp 0.4s ease forwards;
         }
+
         .card:hover {
-            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
         }
+
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .card-content {
             padding: 20px !important;
         }
+
         .message-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
+
         .sender {
             font-weight: 700;
-            color: #1a73e8; /* Google Link Blue */
+            color: #1a73e8;
+            /* Google Link Blue */
             font-size: 1.1rem;
             display: flex;
             align-items: center;
         }
+
         .sender i {
             margin-right: 8px;
             font-size: 1.2rem;
         }
+
         .timestamp {
             color: #5f6368;
             font-size: 0.85rem;
         }
+
         .message-body {
             font-size: 1rem;
             color: #202124;
@@ -74,6 +96,7 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
         /* Verification Code Highlight */
         .code-highlight {
             background-color: #e8f0fe;
@@ -85,6 +108,7 @@
             font-size: 1.1em;
             letter-spacing: 0.5px;
         }
+
         /* Empty State */
         #empty-state {
             text-align: center;
@@ -92,34 +116,42 @@
             color: #757575;
             display: none;
         }
+
         #empty-state i {
             font-size: 4rem;
             color: #e0e0e0;
             margin-bottom: 10px;
         }
+
         /* Loading Bar */
         .progress {
             margin: 0;
             background-color: #e0e0e0;
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
         }
+
         .progress .indeterminate {
             background-color: #4285F4;
         }
+
         /* Floating Action Button for Mobile */
         .fixed-action-btn {
             display: none;
         }
+
         @media only screen and (max-width: 600px) {
             .fixed-action-btn {
                 display: block;
             }
+
             .nav-refresh-btn {
                 display: none;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -127,7 +159,8 @@
         <div class="nav-wrapper container">
             <a href="#" class="brand-logo"><i class="material-icons">sms</i>SMS Viewer</a>
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="#" id="nav-refresh-btn" class="nav-refresh-btn"><i class="material-icons left">refresh</i>Refresh</a></li>
+                <li><a href="#" id="nav-refresh-btn" class="nav-refresh-btn"><i
+                            class="material-icons left">refresh</i>Refresh</a></li>
             </ul>
         </div>
         <!-- Loading Bar -->
@@ -138,7 +171,7 @@
 
     <!-- Main Content -->
     <div class="container" id="app-container">
-        
+
         <!-- Empty State -->
         <div id="empty-state">
             <i class="material-icons">inbox</i>
@@ -165,7 +198,7 @@
     <script>
         // Configuration
         const API_GET_URL = "/api/get-messages";
-        
+
         // DOM Elements
         const messagesList = document.getElementById('messages-list');
         const emptyState = document.getElementById('empty-state');
@@ -200,7 +233,7 @@
                 });
             } catch (e) {
                 console.error('Time format error:', e);
-                return isoString; 
+                return isoString;
             }
         }
 
@@ -209,8 +242,8 @@
          */
         function escapeHTML(str) {
             if (!str) return '';
-            return str.replace(/[&<>"']/g, function(m) {
-                return {'&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#39;'}[m];
+            return str.replace(/[&<>"']/g, function (m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
             });
         }
 
@@ -232,7 +265,7 @@
                 if (!response.ok) throw new Error(`Network error: ${response.status}`);
 
                 const messages = await response.json();
-                
+
                 // Sort by time descending
                 messages.sort((a, b) => new Date(b.receivedAt) - new Date(a.receivedAt));
 
@@ -250,7 +283,7 @@
 
                 // Smart refresh check
                 if (!isManual && apiNewestTimestamp === newestTimestamp) {
-                    return; 
+                    return;
                 }
 
                 console.log("Updating messages...");
@@ -260,7 +293,7 @@
                 messages.forEach(msg => {
                     const card = document.createElement('div');
                     card.className = 'card';
-                    
+
                     const safeContent = escapeHTML(msg.content);
                     const formattedContent = highlightCodes(safeContent);
                     const formattedTime = formatTime(msg.receivedAt);
@@ -279,12 +312,12 @@
                 });
 
                 if (isManual) {
-                    M.toast({html: 'Refreshed!', classes: 'rounded'});
+                    M.toast({ html: 'Refreshed!', classes: 'rounded' });
                 }
 
             } catch (error) {
                 console.error('Fetch error:', error);
-                M.toast({html: `Error: ${error.message}`, classes: 'red rounded'});
+                M.toast({ html: `Error: ${error.message}`, classes: 'red rounded' });
             } finally {
                 setLoading(false);
             }
@@ -312,4 +345,5 @@
 
     </script>
 </body>
+
 </html>
