@@ -3,293 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APPLE ID SMS查看器</title>
+    <title>SMS Viewer</title>
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- 基础样式 --- */
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
         }
-        /* --- 容器 --- */
-        #app-container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.07);
-            overflow: hidden; /* 确保子元素圆角 */
+        nav {
+            background-color: #4285F4; /* Google Blue */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        /* --- 顶部控制栏 --- */
-        #controls {
-            padding: 20px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eef;
-            background-color: #fafcfe;
-        }
-        h1 { 
-            color: #2c3e50;
-            margin: 0;
-            font-size: 1.5em;
-        }
-        button {
-            background-color: #007aff;
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 0.95em;
+        .brand-logo {
             font-weight: 500;
-            transition: background-color 0.2s, box-shadow 0.2s;
+            font-size: 1.5rem !important;
         }
-        button:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 8px rgba(0,122,255,0.2);
+        .container {
+            margin-top: 20px;
+            max-width: 800px;
         }
-        /* --- 消息区域 --- */
-        #messages-container {
-            padding: 25px;
-            max-height: 75vh;
-            overflow-y: auto;
-        }
-        #status {
-            font-style: italic;
-            color: #888;
-            font-size: 1em;
-        }
-        /* --- 单条消息卡片 --- */
-        .message-card {
-            background-color: #fdfdfd;
-            border: 1px solid #e9e9e9;
+        .card {
             border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            opacity: 0; /* 初始不可见，用于动画 */
-            animation: fadeIn 0.5s ease forwards; /* 淡入动画 */
+            border: none;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            opacity: 0;
+            animation: slideUp 0.4s ease forwards;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        .card:hover {
+            box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .card-content {
+            padding: 20px !important;
         }
         .message-header {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #f0f0f0;
+            align-items: center;
+            margin-bottom: 10px;
         }
-        .timestamp { color: #777; }
-        .message-content {
-            font-size: 1.05em;
-            white-space: pre-wrap; /* 保留换行和空格 */
-            word-wrap: break-word; /* 自动换行 */
+        .sender {
+            font-weight: 700;
+            color: #1a73e8; /* Google Link Blue */
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
         }
-        /* --- 验证码高亮 --- */
-        .message-content code {
-            font-family: "Courier New", monospace;
-            background-color: #fffbe6; /* 浅黄色背景 */
-            color: #d9534f; /* 红色字体 */
-            font-size: 1.25em; /* 更大更显眼 */
-            font-weight: bold;
-            padding: 3px 6px;
-            border-radius: 5px;
-            border: 1px solid #ffe58f;
+        .sender i {
+            margin-right: 8px;
+            font-size: 1.2rem;
         }
-		.sender { 
-    font-weight: bold; 
-    color: #0056b3;
-}
+        .timestamp {
+            color: #5f6368;
+            font-size: 0.85rem;
+        }
+        .message-body {
+            font-size: 1rem;
+            color: #202124;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* Verification Code Highlight */
+        .code-highlight {
+            background-color: #e8f0fe;
+            color: #1967d2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            font-size: 1.1em;
+            letter-spacing: 0.5px;
+        }
+        /* Empty State */
+        #empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #757575;
+            display: none;
+        }
+        #empty-state i {
+            font-size: 4rem;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+        }
+        /* Loading Bar */
+        .progress {
+            margin: 0;
+            background-color: #e0e0e0;
+            display: none; /* Hidden by default */
+        }
+        .progress .indeterminate {
+            background-color: #4285F4;
+        }
+        /* Floating Action Button for Mobile */
+        .fixed-action-btn {
+            display: none;
+        }
+        @media only screen and (max-width: 600px) {
+            .fixed-action-btn {
+                display: block;
+            }
+            .nav-refresh-btn {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="app-container">
-        <div id="controls">
-            <h1>APPLE ID SMS查看器</h1>
-            <button id="refresh-btn">手动刷新</button>
+    <!-- Navbar -->
+    <nav>
+        <div class="nav-wrapper container">
+            <a href="#" class="brand-logo"><i class="material-icons">sms</i>SMS Viewer</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="#" id="nav-refresh-btn" class="nav-refresh-btn"><i class="material-icons left">refresh</i>Refresh</a></li>
+            </ul>
+        </div>
+        <!-- Loading Bar -->
+        <div class="progress" id="loading-bar">
+            <div class="indeterminate"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container" id="app-container">
+        
+        <!-- Empty State -->
+        <div id="empty-state">
+            <i class="material-icons">inbox</i>
+            <p>No messages yet</p>
         </div>
 
-        <div id="messages-container">
-            <span id="status">正在加载短信...</span>
-            </div>
+        <!-- Messages List -->
+        <div id="messages-list">
+            <!-- Cards will be injected here -->
+        </div>
+
     </div>
 
-<script>
-            // ----------------------------------------------
-            // ⚙️ [配置]
-            // ----------------------------------------------
-            const API_GET_URL = "/api/get-messages";
-            // ----------------------------------------------
+    <!-- FAB for Mobile -->
+    <div class="fixed-action-btn">
+        <a class="btn-floating btn-large blue" id="fab-refresh-btn">
+            <i class="large material-icons">refresh</i>
+        </a>
+    </div>
 
+    <!-- Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-            // --- 脚本逻辑 ---
+    <script>
+        // Configuration
+        const API_GET_URL = "/api/get-messages";
+        
+        // DOM Elements
+        const messagesList = document.getElementById('messages-list');
+        const emptyState = document.getElementById('empty-state');
+        const loadingBar = document.getElementById('loading-bar');
+        const navRefreshBtn = document.getElementById('nav-refresh-btn');
+        const fabRefreshBtn = document.getElementById('fab-refresh-btn');
 
-            // 获取 DOM 元素
-            const messagesContainer = document.getElementById('messages-container');
-            const statusElement = document.getElementById('status');
-            const refreshButton = document.getElementById('refresh-btn');
+        // State
+        let newestTimestamp = null;
 
-            // [!!! 关键修改 1 !!!]
-            // 我们需要一个变量来“记住”当前最新的短信时间戳
-            let newestTimestamp = null;
+        /**
+         * Highlight verification codes
+         */
+        function highlightCodes(text) {
+            return text.replace(/(\b\d{4,8}\b)/g, '<span class="code-highlight">$1</span>');
+        }
 
-            
-            /**
-             * 高亮显示短信中的潜在验证码 (例如 4 到 8 位的数字)
-             */
-            function highlightCodes(text) {
-                return text.replace(/(\b\d{4,8}\b)/g, '<code>$1</code>');
+        /**
+         * Format Timestamp
+         */
+        function formatTime(isoString) {
+            try {
+                const date = new Date(isoString);
+                return date.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+            } catch (e) {
+                console.error('Time format error:', e);
+                return isoString; 
             }
+        }
 
+        /**
+         * Escape HTML
+         */
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, function(m) {
+                return {'&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#39;'}[m];
+            });
+        }
 
-			/**
-             * 格式化 ISO 8601 时间戳 (带日期)
-             */
-            function formatTime(isoString) {
-                try {
-                    const date = new Date(isoString);
-                    
-                    // [!!! 关键修改 !!!]
-                    // 我们使用 toLocaleString (而不是 toLocaleTimeString)
-                    // 并添加 'month' 和 'day' 选项
-                    return date.toLocaleString('zh-CN', {
-						year: '2-digit',
-                        month: '2-digit',  // 月份 (e.g., 11)
-                        day: '2-digit',    // 日期 (e.g., 13)
-                        hour: '2-digit',   // 小时
-                        minute: '2-digit', // 分钟
-                        second: '2-digit', // 秒
-                        hour12: false      // 确保24小时制
-                    });
-                } catch (e) {
-                    console.error('时间格式化错误:', e);
-                    return isoString; 
-                }
-            }
-            
-            /**
-             * [!!! 关键修改 2 !!!]
-             * 修改 fetchMessages 函数，使其具有“智能检查”功能
-             */
-            async function fetchMessages() {
+        /**
+         * Show/Hide Loading
+         */
+        function setLoading(isLoading) {
+            loadingBar.style.display = isLoading ? 'block' : 'none';
+        }
+
+        /**
+         * Fetch Messages
+         */
+        async function fetchMessages(isManual = false) {
+            if (isManual) setLoading(true);
+
+            try {
+                const response = await fetch(API_GET_URL);
+                if (!response.ok) throw new Error(`Network error: ${response.status}`);
+
+                const messages = await response.json();
                 
-                // 仅在初次加载时显示“正在刷新”
-                if (document.getElementById('status')) {
-                    statusElement.textContent = "正在刷新...";
+                // Sort by time descending
+                messages.sort((a, b) => new Date(b.receivedAt) - new Date(a.receivedAt));
+
+                if (messages.length === 0) {
+                    messagesList.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    newestTimestamp = null;
+                    setLoading(false);
+                    return;
                 }
 
-                try {
-                    const response = await fetch(API_GET_URL);
-                    if (!response.ok) {
-                        throw new Error(`网络错误: ${response.status}`);
-                    }
+                emptyState.style.display = 'none';
 
-                    const messages = await response.json();
+                const apiNewestTimestamp = messages[0].receivedAt;
 
-                    // [!!! 关键修复：在这里添加这一行 !!!]
-                    // 无论后端顺序如何, 我们都在前端强制按时间倒序(最新的在最前)
-                    // (b - a = 降序 = 最新的在最前)
-                    messages.sort((a, b) => new Date(b.receivedAt) - new Date(a.receivedAt));
+                // Smart refresh check
+                if (!isManual && apiNewestTimestamp === newestTimestamp) {
+                    return; 
+                }
 
+                console.log("Updating messages...");
+                newestTimestamp = apiNewestTimestamp;
+                messagesList.innerHTML = '';
 
-                    // --- 智能刷新逻辑开始 ---
-
-                    if (messages.length === 0) {
-                        // 如果服务器上没有消息
-                        messagesContainer.innerHTML = '<span id="status">暂无短信。</span>';
-                        newestTimestamp = null; // 重置时间戳
-                        return;
-                    }
+                messages.forEach(msg => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
                     
-                    // 获取 API 返回的最新一条短信的时间戳
-                    // (因为我们的 Python 代码使用 insert(0, ...), 所以最新的总是在第0个)
-                    const apiNewestTimestamp = messages[0].receivedAt;
+                    const safeContent = escapeHTML(msg.content);
+                    const formattedContent = highlightCodes(safeContent);
+                    const formattedTime = formatTime(msg.receivedAt);
+                    const safeSender = escapeHTML(msg.sender);
 
-                    // [!!! 这就是停止闪烁的核心 !!!]
-                    // 如果 API 返回的最新时间戳 和 我们“记住”的时间戳 相同
-                    // 意味着没有新短信，我们什么都不做，直接退出函数。
-                    if (apiNewestTimestamp === newestTimestamp) {
-                        // console.log("没有新数据，不刷新DOM。"); // (您可以取消注释这行来调试)
-                        return; 
-                    }
-
-                    // --- 智能刷新逻辑结束 ---
-
-                    // [!!! 只有在“有新数据”时，才会执行到这里 !!!]
-                    
-                    console.log("检测到新数据，正在刷新页面...");
-                    
-                    // 更新我们“记住”的时间戳
-                    newestTimestamp = apiNewestTimestamp; 
-                    
-                    // 清空容器 (现在这行代码只会在有新短信时才运行)
-                    messagesContainer.innerHTML = ''; 
-
-                    // 遍历数据并重新生成 HTML
-                    messages.forEach(msg => {
-                        const card = document.createElement('div');
-                        card.className = 'message-card';
-
-                        const safeContent = escapeHTML(msg.content);
-                        const formattedContent = highlightCodes(safeContent);
-                        const formattedTime = formatTime(msg.receivedAt);
-                        const safeSender = escapeHTML(msg.sender);
-
-                        card.innerHTML = `
+                    card.innerHTML = `
+                        <div class="card-content">
                             <div class="message-header">
-								<span class="sender">短信内容</span>  
+                                <span class="sender"><i class="material-icons">account_circle</i>${safeSender}</span>
                                 <span class="timestamp">${formattedTime}</span>
                             </div>
-                            <div class="message-content">${formattedContent}</div>
-                        `;
-                        messagesContainer.appendChild(card);
-                    });
-
-                } catch (error) {
-                    console.error('获取短信失败:', error);
-                    // 只有在容器为空时才显示错误
-                    if (messagesContainer.innerHTML === '') {
-                         messagesContainer.innerHTML = `<span id="status" style="color: red;">获取短信失败: ${error.message}</span>`;
-                    }
-                }
-            }
-
-            /**
-            * 辅助函数：转义 HTML，防止 XSS 攻击
-            */
-            function escapeHTML(str) {
-                if (!str) return '';
-                return str.replace(/[&<>"']/g, function(m) {
-                    return {'&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#39;'}[m];
+                            <div class="message-body">${formattedContent}</div>
+                        </div>
+                    `;
+                    messagesList.appendChild(card);
                 });
+
+                if (isManual) {
+                    M.toast({html: 'Refreshed!', classes: 'rounded'});
+                }
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                M.toast({html: `Error: ${error.message}`, classes: 'red rounded'});
+            } finally {
+                setLoading(false);
             }
+        }
 
-            // --- 事件监听 (保持不变) ---
-            
-            // 1. 页面加载时立即获取一次
-            document.addEventListener('DOMContentLoaded', fetchMessages);
-            
-            // 2. 点击按钮时刷新
-            // (我们强制刷新，清除旧的时间戳)
-            refreshButton.addEventListener('click', () => {
-                newestTimestamp = null; // 强制刷新
-                fetchMessages();
-            });
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMessages(true); // Initial load
+        });
 
-            // 3. (保持不变) 每 5 秒自动检查一次
-            setInterval(fetchMessages, 5000); 
+        navRefreshBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            newestTimestamp = null; // Force refresh
+            fetchMessages(true);
+        });
 
-        </script>
-    </body>
-    </html>
+        fabRefreshBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            newestTimestamp = null; // Force refresh
+            fetchMessages(true);
+        });
+
+        // Auto-refresh every 5 seconds
+        setInterval(() => fetchMessages(false), 5000);
+
+    </script>
 </body>
 </html>
