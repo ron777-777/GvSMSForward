@@ -41,9 +41,9 @@ def handle_new_sms():
             abort(400, description="请求体必须包含 from, message 和 originalTimestamp 字段。")
 
         # 3. 过滤掉 Unknown 发件人
-        if data['from'] == 'Unknown':
-            print('跳过 Unknown 发件人的消息')
-            return jsonify({"success": True, "message": "Unknown 发件人消息已跳过"}), 200
+        # if data['from'] == 'Unknown':
+        #     print('跳过 Unknown 发件人的消息')
+        #     return jsonify({"success": True, "message": "Unknown 发件人消息已跳过"}), 200
 
         # 4. 创建新消息
         new_message = {
@@ -77,6 +77,19 @@ def get_messages():
     """
     print("前端正在请求短信列表...")
     return jsonify(received_messages)
+
+@app.route('/api/cleanup-unknown', methods=['POST'])
+def cleanup_unknown():
+    """
+    [POST] /api/cleanup-unknown
+    清理所有Unknown发件人的消息
+    """
+    global received_messages
+    original_count = len(received_messages)
+    received_messages = [msg for msg in received_messages if msg.get('sender') != 'Unknown']
+    removed_count = original_count - len(received_messages)
+    print(f"已清理 {removed_count} 条Unknown消息")
+    return jsonify({"success": True, "removed": removed_count})
 
 # --- 前端页面服务 ---
 
