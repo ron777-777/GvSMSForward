@@ -1,0 +1,14 @@
+正在以开发模式启动服务器 (Flask)...
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.16.2.28:5000
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 835-035-734
+127.0.0.1 - - [25/Nov/2025 03:38:49] "POST /api/new-sms HTTP/1.1" 200 -
+127.0.0.1 - - [25/Nov/2025 03:38:59] "POST /api/new-sms HTTP/1.1" 201 -
+127.0.0.1 - - [25/Nov/2025 03:39:06] "GET /api/get-messages HTTP/1.1" 200 -

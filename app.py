@@ -13,7 +13,7 @@ from flask import Flask, request, jsonify, send_from_directory, abort
 # --- 配置 ---
 app = Flask(__name__)
 
-# 我们的“内存数据库”
+# 我们的"内存数据库"
 received_messages = []
 MAX_MESSAGES = 50 # (您可以按需修改这个数字)
 
@@ -40,18 +40,23 @@ def handle_new_sms():
             print('错误：请求数据格式错误，缺少 from, message, 或 originalTimestamp')
             abort(400, description="请求体必须包含 from, message 和 originalTimestamp 字段。")
 
-        # 3. 创建新消息
+        # 3. 过滤掉 Unknown 发件人
+        if data['from'] == 'Unknown':
+            print('跳过 Unknown 发件人的消息')
+            return jsonify({"success": True, "message": "Unknown 发件人消息已跳过"}), 200
+
+        # 4. 创建新消息
         new_message = {
             "sender": data['from'],
             "content": data['message'],
             "receivedAt": data['originalTimestamp'] # <-- 使用 GAS 发来的时间
         }
 
-        # 4. [!!! 关键代码 !!!]
-        # 存入“数据库” (插入到列表头部)
+        # 5. [!!! 关键代码 !!!]
+        # 存入"数据库" (插入到列表头部)
         received_messages.insert(0, new_message)
 
-        # 5. [!!! 关键代码 !!!]
+        # 6. [!!! 关键代码 !!!]
         # 保持数组大小 (从末尾移除最旧的)
         if len(received_messages) > MAX_MESSAGES:
             received_messages.pop() # 移除最旧的一条
