@@ -64,29 +64,14 @@
         }
 
         .message-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 10px;
-        }
-
-        .sender {
-            font-weight: 700;
-            color: #1a73e8;
-            /* Google Link Blue */
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .sender i {
-            margin-right: 8px;
-            font-size: 1.2rem;
+            text-align: right;
         }
 
         .timestamp {
             color: #5f6368;
             font-size: 0.85rem;
+            display: inline-block;
         }
 
         .message-body {
@@ -297,12 +282,10 @@
                     const safeContent = escapeHTML(msg.content);
                     const formattedContent = highlightCodes(safeContent);
                     const formattedTime = formatTime(msg.receivedAt);
-                    const safeSender = escapeHTML(msg.sender);
 
                     card.innerHTML = `
                         <div class="card-content">
                             <div class="message-header">
-                                <span class="sender"><i class="material-icons">account_circle</i>${safeSender}</span>
                                 <span class="timestamp">${formattedTime}</span>
                             </div>
                             <div class="message-body">${formattedContent}</div>
